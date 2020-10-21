@@ -12,7 +12,7 @@ using mvc.Models.Common;
 
 namespace mvc.Controllers
 {
-
+//dsdsddccz
 
     [Authorize(Roles = "Директор")]
     public class CompanyController : Controller
