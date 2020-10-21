@@ -1,0 +1,475 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/global.css">
+
+    <style>
+        h3 {
+            margin: 5px 0;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        body {
+
+            font-family: "Open Sans", sans-serif;
+            font-size: 14px;
+
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+
+            display: grid;
+            grid-template-columns: 235px 1fr;
+            grid-template-rows: 50px 1fr 30px;
+            grid-template-areas: "header header"
+                "nav main"
+                "footer footer";
+
+        }
+
+        ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+
+        }
+
+        header {
+            background-color: #2B3643;
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        nav {
+            background-color: #364150;
+            grid-area: nav;
+        }
+
+        main {
+            background-color: white;
+            grid-area: main;
+
+        }
+
+        footer {
+            background-color: #364150;
+            grid-area: footer;
+            text-align: center;
+            padding-top: 10px;
+            color: #98a6ba;
+        }
+    </style>
+
+    <style>
+        .crumb {
+            padding: 10px 20px;
+            border-bottom: 1px solid #ccc;
+            color: #888;
+        }
+
+        .logo {
+            padding: 20px;
+            color: #a7b5c6;
+            width: 235px;
+            box-sizing: border-box;
+        }
+
+        .iconMenu {
+            display: flex;
+            color: #79869a;
+            margin-right: 20px;
+            cursor: pointer;
+            /* align-items: center; */
+        }
+        .iconMenu a{
+            color: #555;
+            text-decoration: none;
+        }
+
+        .iconMenu>li {
+            padding: 15px 15px;
+            font-size: 17px;
+            position: relative;
+        }
+
+        .iconMenu>li:hover {
+            background-color: #3f4f62;
+        }
+
+
+
+        .badget {
+            position: absolute;
+            top: 7px;
+            left: 3px;
+            padding: 3px 6px;
+            font-size: 11px;
+            border-radius: 50px;
+            background-color: #36c6d3;
+            color: white;
+
+        }
+
+        .iconMenu .subMenu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 300px;
+            background-color: white;
+            border: 1px solid #eee;
+            box-shadow: 0 3px 3px 2px #eee;
+        }
+
+        .iconMenu .subMenu li {
+            padding: 8px 16px;
+
+            font-size: 14px;
+        }
+
+        .iconMenu .subMenu li:hover {
+            background-color: #F6F6F6;
+        }
+    </style>
+
+    <style>
+        #iconAvatar {
+            padding: 15px 3px;
+            display: flex;
+            align-items: center;
+            color: #ccc;
+            outline: none;
+        }
+
+        #iconAvatar img,
+        #iconAvatar i,
+        #iconAvatar span {
+            /* display: inline-block; */
+            padding-left: 5px;
+        }
+
+        #iconAvatar:focus .subMenu,
+        #iconAvatar .subMenu:hover
+         {
+            display: block;
+            color: #555;
+            width: 220px;
+        }
+
+        #iconAvatar .subMenu li i {
+            margin-right: 5px;
+        }
+    </style>
+
+    <style>
+        #iconCalendar {
+            outline: none;
+        }
+
+        #iconCalendar:focus .subMenu {
+            display: block;
+            color: #888;
+
+
+        }
+
+        #iconCalendar .progressBar {
+            margin-bottom: 10px;
+            height: 8px;
+            background-color: #dfe2e9;
+            width: 100%;
+        }
+
+        #iconCalendar .percernt {
+            height: 8px;
+            background-color: #32C5D2;
+        }
+
+        #iconCalendar .subMenu li {
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+    <style>
+        #message {
+            outline: none;
+        }
+
+        #message:focus .subMenu {
+            display: block;
+            color: #888;
+        }
+
+        #message .subMenu li {
+            border-bottom: 1px solid #eee;
+        }
+
+        #message .subMenu h3 {
+            color: #5b9bd1;
+        }
+
+        #message .subMenu p {
+            margin-left: 45px;
+            font-size: 12px;
+        }
+
+        #message .subMenu img {
+            margin-right: 5px;
+            border-radius: 50%;
+            float: left;
+            height: 40px;
+            width: 40px;
+        }
+    </style>
+    <style>
+        #notification {
+            outline: none;
+        }
+
+        #notification:focus .subMenu {
+            display: block;
+            color: #888;
+        }
+
+        #notification .subMenu li {
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+
+    <style>
+        .leftMenu .title {
+            color: #708096;
+            padding: 10px 15px;
+        }
+
+        .leftMenu>li>div {
+            padding: 10px 15px;
+
+
+        }
+
+        .leftMenu>li {
+            border-bottom: 1px solid #3d4957;
+            color: #b4b4b4;
+
+        }
+
+        .leftMenu>li:not(.title):hover {
+            background-color: #2C3542;
+        }
+
+        .leftSubMenu li {
+            padding: 10px 10px 10px 30px;
+            background-color: #364150;
+        }
+
+        .leftSubMenu a {
+            color: #b4b4b4;
+            text-decoration: none;
+        }
+
+        .leftSubMenu li:hover {
+            background-color: #3E4B5C;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="header" style="z-index: 12;">
+        <div class="logo">
+            <img src="/img/logo.png" />
+            <i class="fa fa-bars" style="float:right;" aria-hidden="true"></i>
+        </div>
+
+        <ul class="iconMenu">
+            <li id="notification" tabindex="4">
+                <span class="badget">7</span>
+                <i class="icon-bell"></i>
+
+                <ul class="subMenu">
+                    <li style='background-color: #EAEDF2;'>
+                        <div style="margin-bottom: 10px; ">
+                            Уведомления <b style="float: right;  "><a style="color: #79869a;" href='#'>Все</a></b>
+                        </div>
+                    </li>
+                    <li>
+                        <span style="float: right;  padding: 5px;  background-color: #ddd;">15 мин</span>
+                        <p>перезагрузка сервера </p>
+                    </li>
+                    <li>
+                        <span style="float: right;  padding: 5px; background-color: #ddd;">15 мин</span>
+                        <p>перезагрузка сервера </p>
+                    </li>
+                    <li>
+                        <span style="float: right;  padding: 5px;  background-color: #ddd;">15 мин</span>
+                        <p>перезагрузка сервера </p>
+                    </li>
+                </ul>
+            </li>
+
+            <li id="message" tabindex="3">
+                <span class="badget">3</span>
+                <i class="icon-envelope-open"></i>
+
+                <ul class="subMenu">
+                    <li style='background-color: #EAEDF2;'>
+                        <div style="margin-bottom: 10px; ">
+                            Сообщения <b style="float: right;  "><a style="color: #79869a;" href='#'>Все</a></b>
+                        </div>
+                    </li>
+                    <li>
+                        <img src="/img/avatar.jpg" />
+                        <h3>Николай Басков</h3>
+                        <p>Описание очень важного письма. Срочно срочно до завтра решить все эти проблемы сейчас же</p>
+                    </li>
+                    <li>
+                        <img src="/img/avatar.jpg" />
+                        <h3>Николай Басков</h3>
+                        <p>Описание очень важного письма. Срочно срочно до завтра решить все эти проблемы сейчас же</p>
+                    </li>
+                    <li>
+                        <img src="/img/avatar.jpg" />
+                        <h3>Николай Басков</h3>
+                        <p>Описание очень важного письма. Срочно срочно до завтра решить все эти проблемы сейчас же</p>
+                    </li>
+                </ul>
+            </li>
+
+            <li id="iconCalendar" tabindex="2">
+                <span class="badget">4</span>
+                <i class="icon-calendar"></i>
+
+                <ul class="subMenu">
+                    <li style='background-color: #EAEDF2;'>
+                        <div style="margin-bottom: 10px; ">
+                            Задачи <b style="float: right; "><a style="color: #79869a;" href='#'>Все</a></b>
+                        </div>
+                    </li>
+                    <li>
+                        <div style="margin-bottom: 10px;">
+                            новый релиз <b style="float: right;">30%</b>
+                        </div>
+                        <div class="progressBar">
+                            <div class="percernt" style="width: 30%;">
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div style="margin-bottom: 10px;">
+                            Разработка <b style="float: right;">100%</b>
+                        </div>
+                        <div class="progressBar">
+                            <div class="percernt" style="width: 100%;">
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div style="margin-bottom: 10px;">
+                            Дизайн <b style="float: right;">80%</b>
+                        </div>
+                        <div class="progressBar">
+                            <div class="percernt" style="width: 80%;">
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+            </li>
+            <li id="iconAvatar" tabindex="1" style="position: relative;">
+                <img style="border-radius: 50%; object-fit: cover;" width="30" height="30" v-bind:src="user.avatar" alt=""> <span>{{user.login}}</span> <i
+                    class="fa fa-angle-down"></i>
+
+                <ul class="subMenu">
+                    <li><i class="icon-user"></i> <a href="/User/Index"> Мой профиль</a></li>
+                    <li><i class="icon-calendar"></i> Мой календарь</li> 
+                    <li><i class="icon-envelope-open"></i>Моя почта</li>
+                    <li style="border-bottom: 1px solid #eee;"><i class="icon-rocket"></i>Мои задачи</li>
+
+                    <li><i class="icon-lock"></i> <a href='/Login/LockUser/@User.FindFirst(x => x.Type == "UserId").Value' >Заблокировать учетку</a> </li>
+                 
+                </ul>
+            </li>
+            <li><a href="/login/exit"><i class="icon-logout"></i></a></li>
+        </ul>
+    </header>
+    <nav>
+        <ul class="leftMenu">
+            <li class="title">Общая</li>
+            <li>
+                <div>
+                    <i class="icon-home"></i> Компания <i style="float: right;" class="icon-arrow-down"></i>
+                </div>
+                <ul class="leftSubMenu">
+                    <a href="#">
+                        <li>О компании</li>
+                    </a>
+                    @if(User.IsInRole("Директор")){
+                        <a href="/Company/Employees">
+                            <li>Сотрудники</li>
+                        </a>
+                    }
+                  
+                </ul>
+            </li>
+            <li>
+                <div>
+                    <i class="icon-home"></i> Товары <i style="float: right;" class="icon-arrow-down"></i>
+                </div>
+                <ul class="leftSubMenu">
+                    <a href="/Phone/Index">
+                        <li>Телефоны</li>
+                    </a>
+                </ul>
+            </li>
+
+        </ul>
+    </nav>
+    <main  style="position: relative;">
+        <div class="crumb">
+            Home <i style="font-size: 5px; position: relative; top: -3px;" class="fa fa-circle"></i> Главная
+        </div>
+        <div style="padding: 20px;">
+            @RenderBody()
+        </div>
+    </main>
+    <footer>
+        2020 &copy; Админка электронного магазина
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        var app = new Vue({
+            el: '#header',
+            data: {
+                user:{}
+            },
+            mounted() {
+                this.getAvatar();
+            },
+            methods: {
+                getAvatar: async function () {
+                    let resp = await axios.get('/Layout/GetAvatar');
+                    this.user = resp.data;
+                },
+            },
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>
+<!-- <script src="~/js/site.js" asp-append-version="true"></script> -->

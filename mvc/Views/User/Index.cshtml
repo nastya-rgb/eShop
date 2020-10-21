@@ -1,0 +1,208 @@
+<style>
+    label {
+        display: block;
+        margin-bottom: 7px
+    }
+
+    form {
+        width: 430px;
+        text-align: right;
+        margin: 5px
+    }
+
+    input {
+        padding: 5px;
+        width: 200px;
+        border: none;
+        outline: none;
+        border-bottom: 1px solid #eee
+    }
+
+    textarea {
+        width: 200px;
+        padding: 5px;
+        border: none;
+        outline: none;
+        border-bottom: 1px solid #eee
+    }
+
+    .blue {
+        color: white;
+        background-color: #32c5d2;
+        border: none;
+        padding: 10px;
+        outline: none;
+        margin: 20px 5px 0px 5px
+    }
+
+    .gray {
+        color: 666;
+        background-color: #c2cad8;
+        border: none;
+        padding: 10px;
+        outline: none;
+        margin: 20px 0px 0px 0px
+    }
+
+    .gray:hover {
+        background-color: hsl(218, 22%, 70%);
+    }
+
+    .blue:hover {
+        background-color: hsl(185, 64%, 40%);
+    }
+
+    .btn {
+        display: flex;
+        margin-left: 177px
+    }
+
+    .avatar {
+        float: left;
+        cursor: pointer;
+        object-fit: contain;
+        border-radius: 25px;
+    }
+
+    .mask {
+        position: absolute;
+        width: 140px;
+        height: 150px;
+        background-color: rgba(0, 0, 0, 0.6);
+        left: 0;
+        top: 0;
+        display: none;
+        border-radius: 25px;
+        
+    }
+
+
+    .avblock:hover .mask {
+        display: flex;
+        cursor: pointer;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+
+
+    }
+
+
+</style>
+<div id="app">
+    <div class="avblock" style="position: relative;">
+        <img class="avatar" v-bind:src="imgSrc" height="150" width="140">
+        <div class="mask"  ondblclick="document.getElementById('upload').click()"> <i class="fa fa-pencil" aria-hidden="true" style="color:white;"></i> </div>
+    </div>
+
+    <input id="upload" v-on:change='changeAvatar' style="display: none;" type="file" />
+
+    <form>
+        <label>Имя
+            <input type="text" v-model="user.name" />
+        </label>
+        <label>Фамилия
+            <input type="text" v-model="user.lastName">
+        </label>
+        <label>ИИН
+            <input type="text" v-model="user.iin">
+        </label>
+        <label>Пароль
+            <input style="width: 150px;" v-bind:type="vType" v-model="user.password"> <button v-on:mousedown="vType='text'" v-on:mouseup="vType='password'" class="blue" type="button"><i class="fa fa-eye" aria-hidden="true"></i></button>
+        </label>
+        <label>Позиция
+         
+           <input type="text" readonly v-model="user.position">
+        </label>
+        <label>Телефон
+            <input type="text" v-model="user.mobile">
+        </label>
+        <label>О себе
+            <textarea cols="30" rows="3" v-model="user.aboutMe"></textarea>
+        </label>
+
+
+
+    </form>
+    <div class="btn">
+        <button v-on:click="saveUser()" class="blue">
+            Сохранить изменения
+        </button>
+        <button v-on:click="getUser()" class="gray">
+            Отмена
+        </button>
+        <button v-on:click="openPrint()" class="blue">
+           <i class="fa fa-print" aria-hidden="true" ></i> Печать
+        </button>
+    </div>
+
+</div>
+@section Scripts{
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            user: {},
+            imgSrc:'/img/person.png',
+            vType:"password"
+        },
+        mounted() {
+            this.getUser();
+        },
+        methods: {
+            getUser: async function () {
+                let resp = await axios.get('/User/GetUser');
+                this.user = resp.data;
+                this.imgSrc=resp.data.avatar;
+            },
+            saveUser: async function () {
+                let resp = await axios.post('/User/SaveUser', this.user);
+                if (resp.data == true) {
+                    alert('Данные сохранены');
+                } else {
+                    alert('Данные не валидны')
+                }
+
+            },
+            openPrint:function(){
+                let params=[
+                    'height='+screen.height,
+                    'width='+screen.width
+                ].join(',');
+                window.open("/User/Passport","Passport",params);
+            },
+            changeAvatar(e){
+                let image = e.target.files[0];
+                this.imgSrc=URL.createObjectURL(image);
+                let data = new FormData();
+                data.append('image', e.target.files[0]); 
+                let config ={
+                    header:{
+                        'Content-Type': 'multipart/form-data'
+                    }
+                };
+                axios.post(
+                    '/User/SaveAvatar',
+                    data,
+                    config
+                ).then(
+                    resp=>{
+                        alert(resp.data);
+                    }
+                ) 
+            }
+
+
+
+
+
+
+
+
+
+
+        },
+    })
+
+</script>
+}

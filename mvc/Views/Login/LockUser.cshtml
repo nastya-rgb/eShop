@@ -1,0 +1,111 @@
+@{
+Layout=null;
+}
+@model mvc.Models.Users
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            margin:0;
+            padding:0;
+            min-height: 100vh;
+            background-color: #465568 ;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card{
+            width: 450px;
+            box-sizing: border-box;
+        }
+        header,footer{
+            background-color:#323d4b;
+            text-align:center ;
+            padding:5px;
+        }
+        footer a{
+            color:#7BA2C0;
+            text-decoration:none;
+        }
+        footer a:hover{
+            color:#7BA2C0;
+            text-decoration:underline;
+        }
+        main{
+            background-color:#3A4554;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .avatar img{
+            border-radius: 50%;
+        }
+        .info h3{
+            color:white;
+            margin:5px 0;
+        }
+        .info input{
+            width: 100%;
+            box-sizing: border-box;
+            padding:10px;
+            margin:10px 0;
+            outline:none;
+            background-color:#323d4b;
+            border:none;
+            color:#eee;
+        }
+        .info button{
+            width: 100%;
+            box-sizing: border-box;
+            padding:10px;
+            margin:10px 0;
+            outline:none;
+            border:none;
+            background-color:#e7505a;
+            color:white
+        }
+        .info button:hover{
+            background-color:hsl(356, 76%, 50%);
+            color:white;
+        }
+
+       
+
+    </style>
+</head>
+<body>
+    <div class="card">
+        <header>
+            <h3 style="color:#45ACA5">Locked</h3>
+
+        </header>
+
+        <main>
+            <div class="avatar">
+                <img style="object-fit: cover;" height="150" width="150" src="@Model.Avatar" alt="">
+
+            </div>
+
+            <div class="info">
+                <form method ="POST">
+                <h3> @Model.Login</h3>
+                <input name="Login" type="hidden" value="@Model.Login"/>
+                <input name="Password" placeholder="password" style="display: block;" type="password">
+                <button type ="submit" style="background-blend-mode: block;">Enter</button>
+                </form>
+            </div>
+        </main>
+
+        <footer>
+            <p><a href="/Login/Enter">Сменить пользователя</a></p>
+        </footer>
+        
+    </div>
+    
+</body>
+</html>

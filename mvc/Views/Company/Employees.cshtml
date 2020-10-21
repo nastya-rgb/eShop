@@ -1,0 +1,249 @@
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        color: #333
+    }
+
+    table thead {
+        border-bottom: 3px solid #eee;
+    }
+
+    table tbody tr:hover {
+        background-color: hsl(220, 30%, 99%);
+    }
+
+    table th,
+    table td {
+        border: 1px solid #e7ecf1;
+        padding: 5px;
+        text-align: center;
+    }
+</style>
+<style>
+    .card {
+        border: 1px solid #32c5d2;
+    }
+
+    .card .body {
+        padding: 15px;
+    }
+
+    .card .title {
+        font-size: 18px;
+        padding: 10px;
+        background-color: #32c5d2;
+        color: white;
+    }
+</style>
+
+<style>
+    button {
+        outline: none;
+        border: none;
+        padding: 7px;
+        cursor: pointer;
+
+    }
+
+    .green {
+        background-color: #32c5d2;
+        color: white;
+
+    }
+
+    .green:hover {
+        background-color: hsl(185, 64%, 40%);
+    }
+
+    .dark {
+        background-color: #2f353b;
+        color: white;
+    }
+
+    .dark:hover {
+        background-color: hsl(210, 11%, 11%);
+    }
+
+    .blue {
+        background-color: #3598dc;
+        color: white;
+    }
+
+    .blue:hover {
+        background-color: hsl(204, 70%, 40%)
+    }
+
+    select,
+    input {
+        padding: 5px;
+        width: 100%;
+        outline: none;
+        box-sizing: border-box;
+        border: 1px solid #eee;
+
+    }
+</style>
+<div id="app">
+
+    <div class="card">
+        <div class="title">
+            Сотрудники
+        </div>
+        <div class="body">
+            <form id="frmEmpoyee" action="javascript:;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Фамилия</th>
+                            <th>Имя</th>
+                            <th>ИИН</th>
+                            <th>Должность</th>
+                            <th>Логин</th>
+                            <th>Пароль</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(emp,ind) in emplyees">
+                            <template v-if="emp.isEdit==false">
+                                <td>{{ind+1}}</td>
+                                <td>{{emp.lastName}} </td>
+                                <td>{{emp.name}}</td>
+                                <td>{{emp.iin}}</td>
+                                <td>{{emp.position}}</td>
+                                <td>{{emp.login}} </td>
+                                <td>{{emp.password}}</td>
+                                <td>{{emp.statusWorkText}}</td>
+                                <td>
+                                    <button v-on:click="editEmployee(emp)" class="green"> <i class="fa fa-pencil" aria-hidden="true"></i></button>
+                                    <button v-on:click="removeEmployee(emp)" class="dark"> <i class="fa fa-trash" aria-hidden="true"></i></button>
+                                </td>
+                            </template>
+                            <template v-if="emp.isEdit==true">
+                                <td>{{ind+1}}</td>
+                                <td><input required v-model="empl.lastName" type="text"> </td>
+                                <td><input required v-model="empl.name" type="text"></td>
+                                <td><input required maxlength="12" minlength="12" v-model="empl.iin" type="text"></td>
+                                <td>
+
+                                    <select v-model="empl.positionId">
+                                        <option v-for="pos in positions" v-bind:value="pos.id">{{pos.name}}</option>
+                                    </select>
+                                </td>
+                                <td><input required maxlength="10" v-model="empl.login" type="text"> </td>
+                                <td><input required maxlength="10" minlength="5" v-model="empl.password" type="text">
+                                </td>
+                                <td>
+                                    <select v-model.number="empl.statusWork">
+                                        <option value="1">Работает</option>
+                                        <option value="2">Отпуск</option>
+                                        <option value="3">Болеет</option>
+                                        <option value="4">Выходной</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button v-on:click="saveEmployee()" style="width: 100%;" class="blue"> <i
+                                            class="fa fa-check" aria-hidden="true"></i></button>
+                                </td>
+                            </template>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+            <div style="margin-top: 10px; text-align: right;">
+                <button v-show="isShow" v-on:click="addEmploeyee()" class="blue" type="submit">добавить</button>
+                <button type="button" v-on:click="exportExcel()" style="background-color: #1D9C73; color: #fff;">Экспорт <i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            isShow:true,
+            positions: [],
+            emplyees: [],
+            empl: {
+               
+                id:0,
+                lastName: '',
+                name: '',
+                iin: '',
+                positionId: 2,
+                login: '',
+                password: '',
+                statusWork: 1,
+                isEdit: true
+            }
+        },
+        mounted() {
+            this.getEmployees();
+            this.getPosition();
+
+        },
+        methods: {
+            editEmployee:async function(emp){
+                this.isShow=false;
+                emp.isEdit=true;
+                this.empl=emp;
+
+            },
+            exportExcel: function() {
+                document.location="/Company/GetExcelEmployees";
+                
+            },
+            
+            getPosition: async function () {
+                let resp = await axios.get('/Company/GetPosition');
+                this.positions = resp.data;
+            },
+            removeEmployee:async function(emp){
+                var isDelete = confirm("Вы желаете удалить запись?");
+                if(isDelete){
+                    let resp = await axios.post('/Company/DeleteEmloyee', emp);
+                    this.getEmployees();
+                }
+            },
+            saveEmployee: async function () {
+                this.isShow=true;
+                if (frmEmpoyee.checkValidity()) {
+
+                    let resp = await axios.post('/Company/SaveEmpoyee', this.empl);
+                    if (resp.data == true) {
+                        this.getEmployees();
+                        this.empl = {
+                            id:0,
+                            lastName: '',
+                            name: '',
+                            iin: '',
+                            positionId: 2,
+                            login: '',
+                            password: '',
+                            statusWork: 1,
+                            isEdit: true
+                        }
+                    }else{
+                        alert(resp.data);
+                    }
+                }
+
+            },
+            addEmploeyee() {
+                this.isShow=false;
+                this.emplyees.push(this.empl)
+            },
+            getEmployees: async function () {
+                let resp = await axios.post('/Company/GetEmpoyees', {});
+                this.emplyees = resp.data;
+            }
+        }
+    })
+</script>
+
+}

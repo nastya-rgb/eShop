@@ -1,0 +1,335 @@
+<style>
+    .tbPhone {
+        border-collapse: collapse;
+    }
+
+    .tbPhone thead tr {
+        background-color: #F1F4F7;
+
+    }
+
+    .tbPhone th,
+    .tbPhone td {
+
+        padding: 10px;
+        border: 1px solid #eee;
+
+
+    }
+
+    .tbPhone thead th {
+        font-weight: normal;
+        color: #333;
+    }
+
+    .tbPhone tbody tr:hover {
+        background-color: #eee;
+    }
+
+    button {
+        border: none;
+        outline: none;
+        padding: 10px;
+        margin: 5px 0px;
+        cursor: pointer
+    }
+
+    .export {
+        background-color: #1c9970;
+        color: #eee
+    }
+
+    .export:hover {
+        background-color: hsl(160, 69%, 40%);
+        color: #eee
+    }
+
+    .page {
+        background-color: #F1F4F7;
+    }
+
+    .page:hover {
+        background-color: hsl(210, 27%, 86%);
+    }
+
+    thead select,
+    thead input {
+
+        padding: 5px;
+        outline: none;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+
+    .colWidth .sort {
+        cursor: pointer;
+    }
+
+    .blue {
+        background-color: blu;
+    }
+
+    .blue:hover {
+        background-color: hsl(182, 25%, 60%);
+    }
+
+    #chartdiv {
+        width: 100%;
+        height: 100%;
+
+    }
+
+    .blockCenter {
+        position: absolute;
+        top: 0;
+        left: 0;
+         background-color: rgba(50, 50, 50, 0.9);
+
+
+    }
+</style>
+
+
+
+
+
+<div id="app">
+    <button class="export" onclick="document.getElementById('upload').click()">Импорт <i class="fa fa-file-excel-o"
+            aria-hidden="true"></i></button>
+    <button v-on:click=" createChart();" class="blue"> График </button>
+    <table class="tbPhone">
+        <thead>
+            <tr class="colWidth">
+                <th>№</th>
+                <th class="sort" v-on:click="sortTable('brand')"><i class="fa fa-briefcase" aria-hidden="true"></i>
+                    Бренд <i v-show="colSort=='brand'" v-bind:class="colSortClass"></i></th>
+                <th class="sort" v-on:click="sortTable('name')"><i class="fa fa-line-chart" aria-hidden="true"></i>
+                    Серия <i v-show="colSort=='name'" v-bind:class="colSortClass"></i></th>
+                <th class="sort" v-on:click="sortTable('year')"><i class="fa fa-calendar" aria-hidden="true"></i> Год
+                    выпуска <i v-show="colSort=='year'" v-bind:class="colSortClass"></i></th>
+                <th><i class="fa fa-android" aria-hidden="true"></i> ОС</th>
+                <th><i class="fa fa-paint-brush" aria-hidden="true"></i> Цвет</th>
+                <th class="sort" v-on:click="sortTable('price')"><i class="fa fa-money" aria-hidden="true"></i> Цена <i
+                        v-show="colSort=='price'" v-bind:class="colSortClass"></th>
+                <th class="sort" v-on:click="sortTable('count')"><i class="fa fa-battery-half" aria-hidden="true"></i>
+                    Количество <i v-show="colSort=='count'" v-bind:class="colSortClass"></i></th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>
+                    <select v-model.number="filter.brand" v-on:change="getPhones()">
+                        <option value="0">все</option>
+                        <option v-for="b in brands" v-bind:value="b.id">{{b.name}}</option>
+                    </select>
+                </th>
+
+                <th>
+                    <input style="width:100px" v-model.string="filter.name" type="text" v-on:keyup.enter="getPhones()">
+                </th>
+                <th>
+                    <select style="width: 100px;" v-model.number="filter.os" v-on:change="getPhones()">
+                        <option value="0">все </option>
+                        <option v-for="o in os" v-bind:value="o.id">{{o.name}} </option>
+                    </select>
+                </th>
+                <th></th>
+                <th style="width: 150px; ">
+                    <input style="width: 48%;" type="number" v-model.number="filter.priceFrom"
+                        v-on:keyup.enter="getPhones()">
+                    <input style="width: 48%;" type="number" v-model.number="filter.priceTo"
+                        v-on:keyup.enter="getPhones()">
+                </th>
+                <th></th>
+                <th style="width: 150px;">
+                    <input style="width: 60px;" type="number" v-model.number="filter.year"
+                        v-on:keyup.enter="getPhones()">
+                </th>
+
+
+            </tr>
+        <tbody>
+            <tr v-for="(p,ind) in phones">
+                <td>{{(page-1)*10+ind+1}}</td>
+                <td>{{p.brand}}</td>
+                <td>{{p.seria}}</td>
+                <td>{{p.os}}</td>
+                <td>{{p.color}}</td>
+                <td style="text-align: center;">{{p.price}}</td>
+                <td style="text-align: center;">{{p.count}}</td>
+                <td style="text-align: center;">{{p.year}}</td>
+
+
+
+
+            </tr>
+
+
+        </tbody>
+        </thead>
+    </table>
+    <div v-show="isLoad" style="text-align:center;margin-top:10px;">пожалуйста пождите...</div>
+    <button v-on:click="prevPage()" class="page">
+        < </button>
+
+            <input style="width: 40px; padding:5px" type="number" v-model="page" v-on:keyup.enter="getPhones()">/
+            {{totalPage}}
+            <button v-on:click="nextPage()" class="page">></button>
+            количество: {{count}}
+            </br>
+            <input id="upload" style="display:none;" v-on:change="importExcel" type="file" />
+
+            <div id="chartdiv" class="blockCenter" v-show="isChart" v-on:dblclick="isChart=false">
+
+            </div>
+</div>
+
+
+
+
+
+
+@section Scripts{
+<!-- Resources -->
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/dark.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+<script>
+
+
+
+            // Add data
+
+
+            // Add label
+
+
+
+</script>
+<script>
+
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            isChart: false,
+            isLoad: false,
+            page: 1,
+            phones: [],
+            count: 0,
+            totalPage: 0,
+            brands: [],
+            os: [],
+            colSort: '',
+            filter: {
+                page: 0,
+                brand: 0,
+                name: '',
+                year: 0,
+                os: 0,
+                priceFrom: 0,
+                priceTo: 0,
+                sort: '',
+            },
+            cData: [
+            ],
+            lblText: 'количество'
+        },
+        mounted() {
+            this.getPhones();
+            this.getBrand();
+            this.getOS();
+
+
+        },
+
+        methods: {
+            createChart: async function () {
+                this.isChart = true;
+
+
+                let resp = await axios.get('/Phone/GetChartData');
+                this.cData = resp.data.lstChart;
+                this.lblText = resp.data.count;
+                am4core.useTheme(am4themes_dark);
+                am4core.useTheme(am4themes_animated);
+
+
+                var chart = am4core.create("chartdiv", am4charts.PieChart);
+                chart.data = this.cData;
+
+                chart.innerRadius = 100;
+                var label = chart.seriesContainer.createChild(am4core.Label);
+                label.text = this.lblText;
+                label.horizontalCenter = "middle";
+                label.verticalCenter = "middle";
+                label.fontSize = 50;
+
+                // Add and configure Series
+                var pieSeries = chart.series.push(new am4charts.PieSeries());
+                pieSeries.dataFields.value = "count";
+                pieSeries.dataFields.category = "brand";
+
+            },
+            sortTable: function (name) {
+                if (this.filter.sort != name) {
+                    this.filter.sort = name;
+                    this.colSort = name;
+                    this.colSortClass = 'fa fa-sort-alpha-asc';
+                } else {
+                    this.filter.sort = name + 'desc';
+                    this.colSort = name;
+                    this.colSortClass = 'fa fa-sort-alpha-desc';
+                }
+                this.getPhones();
+            },
+            getOS: async function () {
+                let resp = await axios.get('/Phone/GetOS');
+                this.os = resp.data;
+            },
+
+            getBrand: async function () {
+                let resp = await axios.get('/Phone/GetBrands');
+                this.brands = resp.data;
+            },
+
+            nextPage: function () {
+                this.page++;
+                this.getPhones();
+            },
+            prevPage: function () {
+                this.page--;
+                this.getPhones();
+            },
+            getPhones: async function () {
+                this.isLoad = true;
+                this.phones = [];
+                this.filter.page = this.page;
+
+                let resp = await axios.get('/Phone/GetPhones',
+                    { params: this.filter }
+                );
+                this.isLoad = false;
+                this.phones = resp.data.phones;
+                this.count = resp.data.count;
+                this.totalPage = resp.data.totalPage;
+            },
+            importExcel(e) {
+                let data = new FormData();
+                data.append('file', e.target.files[0]);
+                let config = {
+                    header: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                };
+
+                axios.post('/Phone/ImportExcel', data, config).then(
+                    resp => {
+                        alert(resp.data);
+                    }
+                )
+            }
+        }
+    })
+</script>
+}
